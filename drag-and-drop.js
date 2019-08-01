@@ -1,5 +1,11 @@
 let dropbox;
-let preview = document.getElementById('preview-img');
+//let preview = document.getElementById('preview-img');
+var createImg = document.createElement("img");
+var preview = document.getElementById("preview");
+preview.appendChild(createImg); 
+createImg.setAttribute("id", "preview-img");
+createImg.setAttribute("height", "200");
+createImg.setAttribute("width", "200");
 
 var para1 = document.createElement("p");         
 var textnode = document.createTextNode("Select from gallery or Drag file here");        
@@ -46,10 +52,11 @@ para3.appendChild(textnode3); */
         var reader = new FileReader();
         reader.onloadend = function() {
             base64_img = reader.result;
-            preview.src = base64_img;
+            createImg.src = base64_img;
             console.log(base64_img);
             
         }
         reader.readAsDataURL(file);
+        document.getElementById("dropbox").style.background = "#ccffdd";
         //alert(file);
     }

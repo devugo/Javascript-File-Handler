@@ -19,15 +19,13 @@ class Upload{
             var file = img.files[0];
             var reader = new FileReader();
             reader.onloadend = function() {
-                //console.log('RESULT', reader.result);
                 base64_img = reader.result;
                 preview.src = base64_img;
                 console.log(base64_img);
-                //$("#img").attr("src", base64_img); 
-               // $(".preview img").show(); // Display image element
                 
             }
             reader.readAsDataURL(file);
+            document.getElementById("dropbox").style.background = "#ccffdd";
         }
     }
 }
