@@ -4,10 +4,6 @@ class Upload{
         this.maxIS = maxImgSize;
     }
 
-    alertMe(){
-        alert('ready to go');
-    }
-
     uploadImage () {
         let img = document.getElementById('photo');
         let size = document.getElementById('photo').files[0].size;
