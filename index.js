@@ -21,11 +21,11 @@ class Upload{
             reader.onloadend = function() {
                 base64_img = reader.result;
                 preview.src = base64_img;
-                console.log(base64_img);
                 
             }
             reader.readAsDataURL(file);
             document.getElementById("dropbox").style.background = "#ccffdd";
+            document.getElementsByTagName("FORM")[0].style.display = "block";
         }
     }
 }

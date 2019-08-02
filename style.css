@@ -18,7 +18,7 @@ body{
     text-align: center;
 }
 
-form{
+#photo, form{
     display: none;
 }
 

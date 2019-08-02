@@ -1,4 +1,6 @@
-let dropbox;
+let dropbox,
+    type,
+    size;
 //let preview = document.getElementById('preview-img');
 var createImg = document.createElement("img");
 var preview = document.getElementById("preview");
@@ -43,7 +45,37 @@ para3.appendChild(textnode3); */
         
         const dt = e.dataTransfer;
         const files = dt.files;
-        handleFiles(files);
+        type = files[0].type;
+        size = files[0].size;
+        if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg'){
+            alert('Image must be in jpg, jpeg or png format');
+        } else if(size > 500000){
+            alert('Maximum image size is 500kb');
+        }else{
+            handleFiles(files);
+
+            fetch('sampleUsers.json')
+            .then(function (res) {
+                console.log(res);
+                return res.json();
+            })
+            .then(function (data) {
+                let result = `<h2> User Info From sampleUser.json </h2>`;
+                data.forEach((user) => {
+                    const { id, name, email } = user
+                    result +=
+                    `<div>
+                        <h5> User ID: ${id} </h5>
+                        <ul class="w3-ul">
+                            <li> User Name : ${name}</li>
+                            <li> User Email: ${email} </li>
+                        </ul>
+                    </div>`;
+
+                    document.getElementById('result').innerHTML = result;
+                });
+            })
+        }
     }
 
     function handleFiles(files){
@@ -53,10 +85,10 @@ para3.appendChild(textnode3); */
         reader.onloadend = function() {
             base64_img = reader.result;
             createImg.src = base64_img;
-            console.log(base64_img);
             
         }
         reader.readAsDataURL(file);
         document.getElementById("dropbox").style.background = "#ccffdd";
-        //alert(file);
+        document.getElementsByTagName("FORM")[0].style.display = "block";
+        
     }
