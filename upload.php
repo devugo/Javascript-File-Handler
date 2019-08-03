@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 header('Accept: application/json');
 /* Getting file name */
-echo $_FILES['file'];
+//echo $_FILES['file'];
 $filename = $_FILES['file']['name'];
 //echo $filename; die();
 /* Location */

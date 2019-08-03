@@ -53,28 +53,6 @@ para3.appendChild(textnode3); */
             alert('Maximum image size is 500kb');
         }else{
             handleFiles(files);
-
-            fetch('sampleUsers.json')
-            .then(function (res) {
-                console.log(res);
-                return res.json();
-            })
-            .then(function (data) {
-                let result = `<h2> User Info From sampleUser.json </h2>`;
-                data.forEach((user) => {
-                    const { id, name, email } = user
-                    result +=
-                    `<div>
-                        <h5> User ID: ${id} </h5>
-                        <ul class="w3-ul">
-                            <li> User Name : ${name}</li>
-                            <li> User Email: ${email} </li>
-                        </ul>
-                    </div>`;
-
-                    document.getElementById('result').innerHTML = result;
-                });
-            })
         }
     }
 
@@ -90,5 +68,32 @@ para3.appendChild(textnode3); */
         reader.readAsDataURL(file);
         document.getElementById("dropbox").style.background = "#ccffdd";
         document.getElementsByTagName("FORM")[0].style.display = "block";
+
+        storeImage(file);
         
+    }
+
+    function storeImage(data)
+    {
+        console.log(data);
+        var fd = new FormData();
+        console.log(fd);
+        fd.append('file', data);
+        console.log(fd);
+
+        fetch('http://localhost:4000/upload.php', {
+            method: 'POST', // or 'PUT'
+            body: fd, // data can be `string` or {object}!
+            headers:{
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log(response);
+            //console.log('Success:', JSON.stringify(response))
+        })
+        .catch(error => {
+            console.error('Error:', error)
+        });
     }
