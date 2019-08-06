@@ -76,32 +76,12 @@ para3.appendChild(textnode3); */
     function storeImage(data)
     {
         var fd = new FormData();
-        
         fd.append('file', data);
 
-        axios({
-            method: "POST",
-            url: "/upload.php",
-            data: fd,
-            headers: {
-                'content-type': 'application/json',
-                'accept': 'application/json'
-            }
-        })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
-        /*fetch("/upload.php", {
+        fetch("/upload.php", {
             method: "POST", // or 'PUT'
             body: fd, // data can be `string` or {object}!
-            headers:{
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
+           
         })
         .then(response => {
             console.log(response);
@@ -109,5 +89,5 @@ para3.appendChild(textnode3); */
         })
         .catch(error => {
             console.log(error);
-        });*/
+        });
     }
