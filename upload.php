@@ -11,7 +11,7 @@ $uploadOk = 1;
 $imageFileType = pathinfo($location,PATHINFO_EXTENSION);
 
 /* Valid Extensions */
-$valid_extensions = array("jpg","jpeg","png");
+$valid_extensions = array("jpg","jpeg","png", "mp4");
 /* Check file extension */
 if( !in_array(strtolower($imageFileType),$valid_extensions) ) {
    $uploadOk = 0;

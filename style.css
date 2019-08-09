@@ -36,3 +36,7 @@ body{
 #dropbox:hover{
     opacity: 0.8;
 }
+
+video{
+    display: hide;
+}

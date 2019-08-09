@@ -1,6 +1,7 @@
 let dropbox,
     type,
-    size;
+    size,
+    file;
 //let preview = document.getElementById('preview-img');
 var createImg = document.createElement("img");
 var preview = document.getElementById("preview");
@@ -40,16 +41,18 @@ para3.appendChild(textnode3); */
     }
 
     function drop(e) {
+        console.log(e);
         e.stopPropagation();
         e.preventDefault();
         
         const dt = e.dataTransfer;
         const files = dt.files;
+        console.log(files);
         type = files[0].type;
         size = files[0].size;
         if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg'){
             alert('Image must be in jpg, jpeg or png format');
-        } else if(size > 500000){
+        } else if(size > 5000000){
             alert('Maximum image size is 500kb');
         }else{
             handleFiles(files);
@@ -57,7 +60,7 @@ para3.appendChild(textnode3); */
     }
 
     function handleFiles(files){
-        var file = files[0];
+        file = files[0];
 
         var reader = new FileReader();
         reader.onloadend = function() {
@@ -66,7 +69,7 @@ para3.appendChild(textnode3); */
             
         }
         reader.readAsDataURL(file);
-        document.getElementById("dropbox").style.background = "#ccffdd";
+        dropbox.style.background = "#ccffdd";
         document.getElementsByTagName("FORM")[0].style.display = "block";
 
         storeImage(file);
@@ -84,10 +87,15 @@ para3.appendChild(textnode3); */
            
         })
         .then(response => {
-            console.log(response);
+            console.log('File was uploaded successfully');
             //console.log('Success:', JSON.stringify(response))
         })
         .catch(error => {
-            console.log(error);
+            console.log('there was an error uploading file');
         });
+    }
+
+    function spinner()
+    {
+        
     }
