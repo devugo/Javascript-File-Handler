@@ -66,7 +66,7 @@ para3.appendChild(textnode3); */
         reader.onloadend = function() {
             base64_img = reader.result;
             createImg.src = base64_img;
-            
+            console.log(base64_img);
         }
         reader.readAsDataURL(file);
         dropbox.style.background = "#ccffdd";
