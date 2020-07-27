@@ -11,7 +11,7 @@ djfhForm.addEventListener('submit', function(e){
 })
 
 class Upload{
-    errors = [];
+    errors = '';
     validation = false;
 
     constructor(minImgSize, maxImgSize, types){
@@ -47,11 +47,10 @@ class Upload{
 
         if(size < this.minImgSize || size > this.maxImgSize){
             var error = new Object();
-            error.name = `Please provide a file size between ${this.minImgSize}  and ${this.maxImgSize}`;
-            this.errors.push(error);
+            error.name = `Please provide a file size between ${this.minImgSize/1000}kb  and ${this.maxImgSize/1000}kb`;
+            this.errors = error;
             return false;
         }
-
         return true;
 
     }
@@ -60,11 +59,12 @@ class Upload{
         let trailSlashIndex = type.indexOf('/');
 
         let fileType = type.slice(trailSlashIndex + 1);
-        console.log(this.types);
-        if(this.types.indexOf(fileType) === -1 ){
+        
+        if(this.types.indexOf(fileType) === -1 && this.types.length > 0){
             var error = new Object();
-            error.name = `Please uplaod only ${this} file type`;
-            this.errors.push(error);
+            
+            error.name = `Please uplaod only ${this.types} file type(s)`;
+            this.errors = error;
             return false;
         }
         return this.validateSize(size);
@@ -73,11 +73,11 @@ class Upload{
         // fileType
     }
 
-    createPreviewElement(tag) {
+    createPreviewElement(tag, type) {
         // djfhPreview.addEventListener
         
         let previewElement = document.createElement(tag);
-        previewElement.setAttribute('id', 'preview-element');
+        previewElement.setAttribute('id', type == 'success' ? 'preview-element' : 'error-element');
         previewElement.setAttribute('class', 'animate__animated animate__zoomIn');
         // console.log(djfhPreview);
         // return console.log(previewElement);
@@ -88,58 +88,24 @@ class Upload{
 
     upload () 
     {
-        console.log(this.errors);
-        console.log('got here');
 
         let file = djfhInput.files[0];
         let size = file.size;
         let type = file.type;
 
-        $result = this.validateType(type, size);
-        if($result){
-
+        let result = this.validateType(type, size);
+        if(!result){
+            return this.addErrors();
         }
-        console.log(type);
-        console.log(size);
-        console.log(file);
-
-        // let img = document.getElementById('photo');
-        // let size = document.getElementById('photo').files[0].size;
-        // let type = document.getElementById('photo').files[0].type;
-        // let preview = document.getElementById('preview-img');
-
-        
-        
-        let base64_img = 'prev';
-        console.log(type);
-        if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg' && type != 'video/mp4'){
-            alert('Image must be in jpg, jpeg or png format');
-        } else if(size > this.maxImgSize){
-            alert('Maximum image size is 500kb');
-        }else if(type == 'video/mp4'){
-            //document.querySelector("input[type=file]").onchange = function(event) {
-                //let file = event.target.files[0];
-                // let file = img.files[0];
-                let blobURL = URL.createObjectURL(file);
-                console.log(blobURL);
-                document.querySelector("video").src = blobURL;
-                this.uploadToServer(file);
-            //}
-        }else{
-            // var file = img.files[0];
-            console.log(file);
-            //console.log(file);
-           // console.log(file.slice(0,0));
-            //console.log(file.slice(0,1));
-            if(this.createPreviewElement('img')){
+        if(result){
+            let base64_img = 'prev';
+            if(this.createPreviewElement('img', 'success')){
                 var reader = new FileReader();
                 reader.onloadend = function() {
                     base64_img = reader.result;
                     let prev = document.getElementById('preview-element');
                     prev.src = base64_img;
                     
-                    console.log(base64_img);
-                    console.log(base64_img.length);
                     
                 }
                 reader.readAsDataURL(file);
@@ -148,12 +114,54 @@ class Upload{
                 
                 this.uploadToServer(file);
             }
+        }
+        // console.log(type);
+        // console.log(size);
+        // console.log(file);
+
+        // let img = document.getElementById('photo');
+        // let size = document.getElementById('photo').files[0].size;
+        // let type = document.getElementById('photo').files[0].type;
+        // let preview = document.getElementById('preview-img');
+
+        
+        
+        // let base64_img = 'prev';
+        // console.log(type);
+        // if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg' && type != 'video/mp4'){
+        //     alert('Image must be in jpg, jpeg or png format');
+        // } else if(size > this.maxImgSize){
+        //     alert('Maximum image size is 500kb');
+        // }else if(type == 'video/mp4'){
+        //     //document.querySelector("input[type=file]").onchange = function(event) {
+        //         //let file = event.target.files[0];
+        //         // let file = img.files[0];
+        //         let blobURL = URL.createObjectURL(file);
+        //         console.log(blobURL);
+        //         document.querySelector("video").src = blobURL;
+        //         this.uploadToServer(file);
+        //     //}
+        // }else{
+        //     // var file = img.files[0];
+        //     console.log(file);
+        //     //console.log(file);
+        //    // console.log(file.slice(0,0));
+        //     //console.log(file.slice(0,1));
+          
            
+        // }
+    }
+
+    addErrors() {
+        if(this.createPreviewElement('p')){
+            let errorTag = document.getElementById('error-element');
+            console.log(this.errors);
+            errorTag.innerText = this.errors.name;
         }
     }
 }
 
-let upload = new Upload(400000, 20000000, ['mp4']);
+let upload = new Upload(4000, 20000000, ['jpg', 'jpeg', 'png']);
 
 
 // document.querySelector("input[type=file]")

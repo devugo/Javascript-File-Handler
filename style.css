@@ -27,11 +27,12 @@ body{
     width: 320px;
     /* height: 40%; */
     text-align: center;
+    margin-top: 200px;
 }
 
 #preview-element {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
 }
 
 /* #photo, form{
