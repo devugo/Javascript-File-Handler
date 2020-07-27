@@ -1,7 +1,23 @@
+// Get file input
+let djfhForm = document.getElementById('djfh-form');
+let djfhInput = document.getElementById('djfh-input');
+let djfhPreview = document.getElementById('djfh-preview');
+
+djfhForm.addEventListener('submit', function(e){
+    
+    e.preventDefault();
+    upload.upload();
+
+})
+
 class Upload{
-    constructor(minImgSize, maxImgSize, arr){
-        this.minIS = minImgSize;
-        this.maxIS = maxImgSize;
+    errors = [];
+    validation = false;
+
+    constructor(minImgSize, maxImgSize, types){
+        this.minImgSize = minImgSize;
+        this.maxImgSize = maxImgSize;
+        this.types = types;
     }
 
     uploadToServer(data)
@@ -23,47 +39,126 @@ class Upload{
         });
     }
 
-    uploadImage () 
+    getElementById(id) {
+
+    }
+
+    validateSize(size){
+
+        if(size < this.minImgSize || size > this.maxImgSize){
+            var error = new Object();
+            error.name = `Please provide a file size between ${this.minImgSize}  and ${this.maxImgSize}`;
+            this.errors.push(error);
+            return false;
+        }
+
+        return true;
+
+    }
+
+    validateType(type, size){
+        let trailSlashIndex = type.indexOf('/');
+
+        let fileType = type.slice(trailSlashIndex + 1);
+        console.log(this.types);
+        if(this.types.indexOf(fileType) === -1 ){
+            var error = new Object();
+            error.name = `Please uplaod only ${this} file type`;
+            this.errors.push(error);
+            return false;
+        }
+        return this.validateSize(size);
+        
+        // //  Check if file type is required
+        // fileType
+    }
+
+    createPreviewElement(tag) {
+        // djfhPreview.addEventListener
+        
+        let previewElement = document.createElement(tag);
+        previewElement.setAttribute('id', 'preview-element');
+        previewElement.setAttribute('class', 'animate__animated animate__zoomIn');
+        // console.log(djfhPreview);
+        // return console.log(previewElement);
+        return djfhPreview.insertBefore(previewElement, djfhPreview.childNodes[0]);
+
+        // img.classList.add('preview');
+    }
+
+    upload () 
     {
-        let img = document.getElementById('photo');
-        let size = document.getElementById('photo').files[0].size;
-        let type = document.getElementById('photo').files[0].type;
-        let preview = document.getElementById('preview-img');
+        console.log(this.errors);
+        console.log('got here');
+
+        let file = djfhInput.files[0];
+        let size = file.size;
+        let type = file.type;
+
+        $result = this.validateType(type, size);
+        if($result){
+
+        }
+        console.log(type);
+        console.log(size);
+        console.log(file);
+
+        // let img = document.getElementById('photo');
+        // let size = document.getElementById('photo').files[0].size;
+        // let type = document.getElementById('photo').files[0].type;
+        // let preview = document.getElementById('preview-img');
+
+        
         
         let base64_img = 'prev';
+        console.log(type);
         if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg' && type != 'video/mp4'){
             alert('Image must be in jpg, jpeg or png format');
-        } else if(size > this.maxIS){
+        } else if(size > this.maxImgSize){
             alert('Maximum image size is 500kb');
         }else if(type == 'video/mp4'){
             //document.querySelector("input[type=file]").onchange = function(event) {
                 //let file = event.target.files[0];
-                let file = img.files[0];
+                // let file = img.files[0];
                 let blobURL = URL.createObjectURL(file);
                 console.log(blobURL);
                 document.querySelector("video").src = blobURL;
                 this.uploadToServer(file);
             //}
         }else{
-            var file = img.files[0];
+            // var file = img.files[0];
+            console.log(file);
             //console.log(file);
            // console.log(file.slice(0,0));
             //console.log(file.slice(0,1));
-            var reader = new FileReader();
-            reader.onloadend = function() {
-                base64_img = reader.result;
-                preview.src = base64_img;
-                console.log(base64_img);
-                console.log(base64_img.length);
+            if(this.createPreviewElement('img')){
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    base64_img = reader.result;
+                    let prev = document.getElementById('preview-element');
+                    prev.src = base64_img;
+                    
+                    console.log(base64_img);
+                    console.log(base64_img.length);
+                    
+                }
+                reader.readAsDataURL(file);
+                document.getElementById("dropbox").style.background = "#ccffdd";
+                // document.getElementsByTagName("FORM")[0].style.display = "block";
                 
+                this.uploadToServer(file);
             }
-            reader.readAsDataURL(file);
-            document.getElementById("dropbox").style.background = "#ccffdd";
-            document.getElementsByTagName("FORM")[0].style.display = "block";
-            
-            this.uploadToServer(file);
+           
         }
     }
 }
 
-let upload = new Upload(400000, 20000000);
+let upload = new Upload(400000, 20000000, ['mp4']);
+
+
+// document.querySelector("input[type=file]")
+// .onchange = function(event) {
+//   let file = event.target.files[0];
+//   let blobURL = URL.createObjectURL(file);
+//   document.querySelector("video").src = blobURL;
+// }
