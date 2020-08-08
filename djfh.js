@@ -7,25 +7,45 @@ let djfhDropbox = document.getElementById('djfh-dropbox');
 
 djfhForm.addEventListener('submit', function(e){
     e.preventDefault();
-    !djfhInput.value == '' && upload(); //  use function if input is not empty
+    upload(); //  use function if input is not empty
 })
 
-let initializedDjfh = false;
+let isDjfhInitialized = false;
 let errors = '';
 let validation = false;
 let minImgSize, 
     maxImgSize, 
     types;
 
+/**
+ * Initialize library
+ * 
+ * @param {* integer} min 
+ * @param {* integer} max 
+ * @param {* Array} typesArr 
+*/
 const initializeDjfh = (min, max, typesArr) => {
     minImgSize = min; maxImgSize = max; types = typesArr;
 
-    minImgSize && maxImgSize ? initializedDjfh = true : initializedDjfh = false;
+    minImgSize && maxImgSize ? isDjfhInitialized = true : isDjfhInitialized = false;
+}
+
+const isFileSelected = () => {
+    djfhInput.value == '' ? false : true;
 }
 
 const upload = () => {
-    if(!initializedDjfh){
-        return;
+    if(!isDjfhInitialized){
+        console.log('unintitial')
+        // var error = new Object();
+        // error.name = `Please select a file`;
+        // errors = error;
+        // errors = `Please, initialize djfh!`;
+        return addErrors(`Please, initialize djfh!`);
+        
+    }
+    if(!isFileSelected()){
+        return addErrors(`Please, select a file!`);
     }
     let file = djfhInput.files[0];
     let size = file.size;
@@ -57,17 +77,15 @@ const upload = () => {
 }
 
 const validateType = (type, size) => {
-    console.log(type); console.log(size);
-    console.log(types)
     let trailSlashIndex = type.indexOf('/');
 
     let fileType = type.slice(trailSlashIndex + 1);
     
     if(types.indexOf(fileType) === -1 && types.length > 0){
-        var error = new Object();
-        
-        error.name = `Please uplaod only ${types} file type(s)`;
-        errors = error;
+        // var error = new Object();
+        // error.name = `Please uplaod only ${types} file type(s)`;
+        // errors = error;
+        error = `Please uplaod only ${types} file type(s)`;
         return false;
     }
     return validateSize(size);
@@ -79,21 +97,30 @@ const validateType = (type, size) => {
 const validateSize = (size) => {
 
     if(size < minImgSize || size > maxImgSize){
-        var error = new Object();
-        error.name = `Please provide a file size between ${minImgSize/1000}kb  and ${maxImgSize/1000}kb`;
-        errors = error;
+        // var error = new Object();
+        // error.name = `Please provide a file size between ${minImgSize/1000}kb  and ${maxImgSize/1000}kb`;
+        // errors = error;
+        errors = `Please provide a file size between ${minImgSize/1000}kb  and ${maxImgSize/1000}kb`;
         return false;
     }
     return true;
 
 }
 
-const addErrors = () => {
-    if(createPreviewElement('p')){
+const addErrors = async (errorMess = false) => {
+    let createTag = await createPreviewElement('p');
+    if(createTag){
+        if(errorMess){ 
+            errors = errorMess;
+        }
         let errorTag = document.getElementById('error-element');
-        console.log(errors);
-        errorTag.innerText = errors.name;
+        errorTag.innerText = errors;
     }
+}
+
+const displayError = (message) => {
+    let errorTag = document.getElementById('error-element');
+    errorTag.innerText = errors;
 }
 
 const createPreviewElement = (tag, type) => {
@@ -104,6 +131,7 @@ const createPreviewElement = (tag, type) => {
     previewElement.setAttribute('class', 'animate__animated animate__zoomIn');
     // console.log(djfhPreview);
     // return console.log(previewElement);
+    djfhPreview.innerHTML = ''; // Cleat all fields
     return djfhPreview.insertBefore(previewElement, djfhPreview.childNodes[0]);
 
     // img.classList.add('preview');
