@@ -13,13 +13,13 @@
         <div class="djfh-preview" id="djfh-preview">
             
         </div>
-        <div onclick="document.getElementById('djfh-input').click()" id="dropbox">
+        <div onclick="document.getElementById('djfh-input').click()" id="djfh-dropbox">
            Select or drag a file
         </div>
 
         <form id="djfh-form" action="upload.php" method="post" encytpe="multipart/form-data">
             <input id="djfh-input" type="file" name="djfh-input" />
-            <input type="submit" value="Upload" />
+            <input type="submit" value="Preview" />
             <!-- <button type="submit">Submit</button> -->
         </form>
         <div id="result">
@@ -37,5 +37,8 @@
     </video>-->
 </body>
 <!-- <script src="drag-and-drop.js"></script> -->
-<script src="index.js"></script>
+<script src="djfh.js"></script>
+<script>
+    initializeDjfh(4000, 20000000, ['jpg', 'jpeg', 'png']);
+</script>
 </html>

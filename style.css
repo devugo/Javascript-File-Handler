@@ -43,7 +43,7 @@ body{
     display: none;
 }
 
-#dropbox{
+#djfh-dropbox{
     background: #ffe1e0;
     border: 4px solid grey;
     height: 50px;
@@ -57,7 +57,7 @@ body{
     align-items: center;
 }
 
-#dropbox:hover{
+#djfh-dropbox:hover{
     opacity: 0.8;
 }
 

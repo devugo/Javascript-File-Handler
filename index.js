@@ -2,6 +2,7 @@
 let djfhForm = document.getElementById('djfh-form');
 let djfhInput = document.getElementById('djfh-input');
 let djfhPreview = document.getElementById('djfh-preview');
+let djfhDropbox = document.getElementById('djfh-dropbox');
 
 djfhForm.addEventListener('submit', function(e){
     
@@ -109,7 +110,7 @@ class Upload{
                     
                 }
                 reader.readAsDataURL(file);
-                document.getElementById("dropbox").style.background = "#ccffdd";
+                djfhDropbox.style.background = "#ccffdd";
                 // document.getElementsByTagName("FORM")[0].style.display = "block";
                 
                 this.uploadToServer(file);
@@ -170,3 +171,38 @@ let upload = new Upload(4000, 20000000, ['jpg', 'jpeg', 'png']);
 //   let blobURL = URL.createObjectURL(file);
 //   document.querySelector("video").src = blobURL;
 // }
+
+dropbox = document.getElementById("djfh-dropbox");
+
+dropbox.addEventListener("dragenter", dragenter, false);
+dropbox.addEventListener("dragover", dragover, false);
+dropbox.addEventListener("drop", drop, false);
+
+function dragenter(e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function dragover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function drop(e) {
+    console.log(e);
+    e.stopPropagation();
+    e.preventDefault();
+    
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    console.log(files);
+    type = files[0].type;
+    size = files[0].size;
+    // if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg'){
+    //     alert('Image must be in jpg, jpeg or png format');
+    // } else if(size > 5000000){
+    //     alert('Maximum image size is 500kb');
+    // }else{
+    //     handleFiles(files);
+    // }
+}
