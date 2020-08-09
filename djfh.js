@@ -31,12 +31,11 @@ const initializeDjfh = (min, max, typesArr) => {
 }
 
 const isFileSelected = () => {
-    djfhInput.value == '' ? false : true;
+    return djfhInput.value == '' ? false : true;
 }
 
 const upload = () => {
     if(!isDjfhInitialized){
-        console.log('unintitial')
         // var error = new Object();
         // error.name = `Please select a file`;
         // errors = error;
@@ -44,24 +43,30 @@ const upload = () => {
         return addErrors(`Please, initialize djfh!`);
         
     }
+    
     if(!isFileSelected()){
         return addErrors(`Please, select a file!`);
     }
     let file = djfhInput.files[0];
     let size = file.size;
+    let name = file.name;
     let type = file.type;
+    console.log(type);
 
-    let result = validateType(type, size);
+    let result = validateType(name, size);
+    
     if(!result){
         return addErrors();
     }
     if(result){
         let base64_img = 'prev';
-        if(createPreviewElement('img', 'success')){
+        if(createPreviewElement('embed', 'success', type)){
+            // if(createPreviewElement('img', 'success')){
+            
             var reader = new FileReader();
             reader.onloadend = function() {
                 base64_img = reader.result;
-                
+                console.log(base64_img);
                 let prev = document.getElementById('preview-element');
                 prev.src = base64_img;
                 
@@ -76,16 +81,17 @@ const upload = () => {
     }
 }
 
-const validateType = (type, size) => {
-    let trailSlashIndex = type.indexOf('/');
+const validateType = (name, size) => {
+    let allDots = name.split(".");
 
-    let fileType = type.slice(trailSlashIndex + 1);
+    let fileType = allDots[allDots.length - 1];
+    console.log(fileType)
     
     if(types.indexOf(fileType) === -1 && types.length > 0){
         // var error = new Object();
         // error.name = `Please uplaod only ${types} file type(s)`;
         // errors = error;
-        error = `Please uplaod only ${types} file type(s)`;
+        errors = `Please uplaod only ${types} file type(s)`;
         return false;
     }
     return validateSize(size);
@@ -123,12 +129,16 @@ const displayError = (message) => {
     errorTag.innerText = errors;
 }
 
-const createPreviewElement = (tag, type) => {
+const createPreviewElement = (tag, type, fileType = '') => {
     // djfhPreview.addEventListener
     
     let previewElement = document.createElement(tag);
     previewElement.setAttribute('id', type == 'success' ? 'preview-element' : 'error-element');
     previewElement.setAttribute('class', 'animate__animated animate__zoomIn');
+    //  If a file type is specified, add the file type to the embed attribute
+    if(fileType != ''){
+        previewElement.setAttribute('type', fileType);
+    }
     // console.log(djfhPreview);
     // return console.log(previewElement);
     djfhPreview.innerHTML = ''; // Cleat all fields
@@ -153,4 +163,46 @@ const uploadToServer = (data) => {
     .catch(error => {
         console.log('there was an error uploading file');
     });
+}
+
+
+
+
+
+/**
+ * DROP UPLOAD
+ */
+dropbox = document.getElementById("djfh-dropbox");
+
+dropbox.addEventListener("dragenter", dragenter, false);
+dropbox.addEventListener("dragover", dragover, false);
+dropbox.addEventListener("drop", drop, false);
+
+function dragenter(e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function dragover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function drop(e) {
+    console.log(e);
+    e.stopPropagation();
+    e.preventDefault();
+    
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    console.log(files);
+    type = files[0].type;
+    size = files[0].size;
+    // if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg'){
+    //     alert('Image must be in jpg, jpeg or png format');
+    // } else if(size > 5000000){
+    //     alert('Maximum image size is 500kb');
+    // }else{
+    //     handleFiles(files);
+    // }
 }
