@@ -3,6 +3,7 @@ let djfhForm = document.getElementById('djfh-form');
 let djfhInput = document.getElementById('djfh-input');
 let djfhPreview = document.getElementById('djfh-preview');
 let djfhDropbox = document.getElementById('djfh-dropbox');
+let djfhDropFile = false;
 
 
 djfhForm.addEventListener('submit', function(e){
@@ -20,9 +21,9 @@ let minImgSize,
 /**
  * Initialize library
  * 
- * @param {* integer} min 
- * @param {* integer} max 
- * @param {* Array} typesArr 
+ * @param {* integer Minimum file size} min 
+ * @param {* integer Maximum file Size} max 
+ * @param {* Array Allowed file extension in array} typesArr 
 */
 const initializeDjfh = (min, max, typesArr) => {
     minImgSize = min; maxImgSize = max; types = typesArr;
@@ -30,10 +31,16 @@ const initializeDjfh = (min, max, typesArr) => {
     minImgSize && maxImgSize ? isDjfhInitialized = true : isDjfhInitialized = false;
 }
 
+/**
+ * CHeck if file has been selected
+ */
 const isFileSelected = () => {
-    return djfhInput.value == '' ? false : true;
+    return djfhInput.value == '' && !djfhDropFile ? false : true;
 }
 
+/**
+ * Preview File prior to upload
+ */
 const upload = () => {
     if(!isDjfhInitialized){
         // var error = new Object();
@@ -47,7 +54,13 @@ const upload = () => {
     if(!isFileSelected()){
         return addErrors(`Please, select a file!`);
     }
-    let file = djfhInput.files[0];
+    let file;
+    if(djfhInput.value != ''){
+        file = djfhInput.files[0];
+    }else{
+        file = djfhDropFile;
+    }
+    
     let size = file.size;
     let name = file.name;
     let type = file.type;
@@ -81,6 +94,12 @@ const upload = () => {
     }
 }
 
+/**
+ * Validate File Type
+ * 
+ * @param {Name of file} name 
+ * @param {Size of file} size 
+ */
 const validateType = (name, size) => {
     let allDots = name.split(".");
 
@@ -100,6 +119,11 @@ const validateType = (name, size) => {
     // fileType
 }
 
+/**
+ * Validate file size
+ * 
+ * @param {Size of file to validate} size 
+ */
 const validateSize = (size) => {
 
     if(size < minImgSize || size > maxImgSize){
@@ -113,22 +137,39 @@ const validateSize = (size) => {
 
 }
 
+/**
+ * Create Error Message Node
+ * 
+ * @param {Error message} errorMess 
+ */
 const addErrors = async (errorMess = false) => {
     let createTag = await createPreviewElement('p');
     if(createTag){
         if(errorMess){ 
             errors = errorMess;
         }
-        let errorTag = document.getElementById('error-element');
-        errorTag.innerText = errors;
+        displayError();
+        // let errorTag = document.getElementById('error-element');
+        // errorTag.innerText = errors;
     }
 }
 
-const displayError = (message) => {
+/**
+ * Bind error message to DOM
+ * 
+ * @param {Error message} message 
+ */
+const displayError = (message = null) => {
     let errorTag = document.getElementById('error-element');
     errorTag.innerText = errors;
 }
-
+/**
+ * Create DOM Element
+ * 
+ * @param {HTML tag being created} tag 
+ * @param {Type of tag i.e a success or an error tag} type 
+ * @param {File type being created for } fileType 
+ */
 const createPreviewElement = (tag, type, fileType = '') => {
     // djfhPreview.addEventListener
     
@@ -170,7 +211,7 @@ const uploadToServer = (data) => {
 
 
 /**
- * DROP UPLOAD
+ * DROP PREVIEW PHASE
  */
 dropbox = document.getElementById("djfh-dropbox");
 
@@ -189,20 +230,11 @@ function dragover(e) {
 }
 
 function drop(e) {
-    console.log(e);
     e.stopPropagation();
     e.preventDefault();
     
     const dt = e.dataTransfer;
     const files = dt.files;
-    console.log(files);
-    type = files[0].type;
-    size = files[0].size;
-    // if(type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg'){
-    //     alert('Image must be in jpg, jpeg or png format');
-    // } else if(size > 5000000){
-    //     alert('Maximum image size is 500kb');
-    // }else{
-    //     handleFiles(files);
-    // }
+    djfhDropFile = files[0];
+    djfhInput.value = ''; // Empty file input if a file has been dragged
 }
